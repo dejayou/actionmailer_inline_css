@@ -18,6 +18,7 @@ module ActionMailer
                                       :include_style_tags => false,
                                       :preserve_styles => true,
                                       :base_url => message.header[:host].to_s)
+        message.body = premailer.to_inline_css
       end
     end
   end
