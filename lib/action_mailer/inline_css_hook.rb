@@ -18,7 +18,13 @@ module ActionMailer
                                       :include_style_tags => false,
                                       :preserve_styles => true,
                                       :base_url => message.header[:host].to_s)
-        message.body = premailer.to_inline_css
+        # Reset the body
+        message.body = nil
+        # Add an HTML part with CSS inlined.
+        message.html_part do
+          content_type "text/html; charset=utf-8"
+          body premailer.to_inline_css
+        end
       end
     end
   end
