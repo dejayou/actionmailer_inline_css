@@ -5,6 +5,7 @@ module ActionMailer
   class InlineCssHook
     def self.delivering_email(message)
       if html_part = (message.html_part || (message.content_type =~ /text\/html/ && message))
+        existing_attachments = message.attachments
         # Generate an email with all CSS inlined (access CSS a FS path)
         premailer = ::Premailer.new(html_part.body.to_s,
                                     :with_html_string => true,
@@ -25,6 +26,8 @@ module ActionMailer
           content_type "text/html; charset=utf-8"
           body premailer.to_inline_css
         end
+
+        existing_attachments.each { |attachment| message.body << attachment }
       end
     end
   end
