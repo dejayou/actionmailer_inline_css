@@ -20,13 +20,7 @@ module ActionMailer
                                       :preserve_styles => true,
                                       :base_url => message.header[:host].to_s)
         # Reset the body
-        message.body = nil
-        # Add an HTML part with CSS inlined.
-        message.html_part do
-          content_type "text/html; charset=utf-8"
-          body premailer.to_inline_css
-        end
-
+        message.body = premailer.to_inline_css
         existing_attachments.each { |attachment| message.body << attachment }
       end
     end
