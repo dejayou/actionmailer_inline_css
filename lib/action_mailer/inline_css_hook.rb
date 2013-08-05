@@ -5,6 +5,7 @@ module ActionMailer
   class InlineCssHook
     def self.delivering_email(message)
       if html_part = (message.html_part || (message.content_type =~ /text\/html/ && message))
+        start_time = Time.now
         existing_attachments = message.attachments
         # Generate an email with all CSS inlined (access CSS a FS path)
         premailer = ::Premailer.new(html_part.body.to_s,
@@ -22,6 +23,9 @@ module ActionMailer
         # Reset the body
         message.body = premailer.to_inline_css
         existing_attachments.each { |attachment| message.body << attachment }
+        
+        end_time = Time.now
+        Rails.logger.info("Premailer took #{end_time - start_time}s") if ENV["ACTION_MAILER_INLINE_CSS_DEBUG"].present?
       end
     end
   end
