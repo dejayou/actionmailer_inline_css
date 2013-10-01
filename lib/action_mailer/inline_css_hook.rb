@@ -4,7 +4,8 @@
 module ActionMailer
   class InlineCssHook
     def self.delivering_email(message)
-      if html_part = (message.html_part || (message.content_type =~ /text\/html/ && message))
+      html_part = (message.html_part || (message.content_type =~ /text\/html/ && message))
+      if html_part && message.header['X-SKIP-PREMAILER'].to_s.blank?
         start_time = Time.now
         existing_attachments = message.attachments
         # Generate an email with all CSS inlined (access CSS a FS path)
